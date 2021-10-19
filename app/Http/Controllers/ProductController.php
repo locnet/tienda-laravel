@@ -9,6 +9,7 @@ use App\Product;
 use App\Brand;
 use App\PhoneDetail;
 use App\Provider;
+use DB;
 
 class ProductController extends Controller
 {
@@ -35,18 +36,31 @@ class ProductController extends Controller
       	return view('products.create_new_product',compact('message','model'));
     }
 
+    /**
+    * crea un nuevo producto copiando otro
+    */
     public function copy($id = null)
     {
         if ($id){
             $product = $this->product->where('id',$id)->first();
             $details = $product->find($id)->phone_detail->first();
             $brand = $this->brand->lists('name','id')->sort();
-            $provider = $this->provider->lists('name','surname','id')->sort();
+            $provider = $this->provider
+                    ->select(DB::raw('CONCAT(name, " ",surname) as provider_name'),'id')
+                    ->orderBy('provider_name')
+                    ->lists('provider_name','id')->sort();
+
             return view('products/copy_product',compact('product','details','brand','provider'));
         }
     }
+
+    /**
+    * buscar producto
+    * @param \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\Response
+    */
         
-    public function createNew(Request $request){
+    public function searchProduct(Request $request){
         $validate = $this->validate($request, ['model' => 'required']);
 
         // busco si tengo el mismo producto en la base de datos
@@ -58,16 +72,30 @@ class ProductController extends Controller
             return view('products/choose_product',compact('products'));
             
         } else {
-            // si no tengo el producto creo una entrada nueva
-            $provider = $this->provider->lists('name','surname','id')->sort();
-            $brand = $this->brand->lists('name','id')->sort();
             $model = $request->model;
-            $message = true;
-            return view('products.create_new_product',compact('brand','message','model','provider'));
+            return view('products.no_found_product')->with('model');
         }
     }
-    
 
+    /**
+    * crea un nuevo producto
+    * @param \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\Response
+    */
+     
+    public function createNew (Request $request) 
+    {
+        // crea un producto nuevo
+        $provider = $this->provider
+                    ->select(DB::raw('CONCAT(name, " ",surname) as provider_name'),'id')
+                    ->orderBy('provider_name')
+                    ->lists('provider_name','id')->sort();
+
+        $brand = $this->brand->lists('name','id')->sort();
+        $model = $request->model;
+        $message = true;
+        return view('products.create_new_product',compact('brand','message','model','provider'));
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -159,8 +187,9 @@ class ProductController extends Controller
             'brand'       => 'required',
             'model'       => 'required',
             'imei'        => 'required|numeric',
+            'barcode'     => 'numeric',
             'buy_price'   => 'required',
-            'sell_price'  => 'required',
+            'sell_price'  => 'required|numeric',
             'provider_id' => 'required|numeric',
             'cpu'         => 'required',
             'ram'         => 'required',

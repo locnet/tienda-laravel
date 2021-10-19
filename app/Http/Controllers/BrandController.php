@@ -54,10 +54,11 @@ class BrandController extends Controller
         
         if($this->brand->where('name',$request->input('name'))->count() === 0) {
             
-            if(Brand::firstOrCreate(array('name' => $request->input('name')))){
+            if( Brand::firstOrCreate(array('name' => $request->input('name'))) ){
                 return view('brand.success')
                       ->with('message','Se ha insertado un nuevo fabricante!');
-            }            
+            } 
+                       
         } else {
             return view('brand.success')->with('message','Ya tenemos este fabricante!');
         }

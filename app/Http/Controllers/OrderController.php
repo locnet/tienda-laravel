@@ -12,6 +12,7 @@ use App\Order;
 use App\Client;
 use DB;
 use App\PhoneDetail;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -53,6 +54,7 @@ class OrderController extends Controller
                     ->products()
                     ->where('model','LIKE',"%$request->model%")
                     ->get();
+
         if($products->count() > 0) {
             return view('orders.view_products',compact('products'));
         } else {
@@ -72,8 +74,8 @@ class OrderController extends Controller
             'barcode'       => 'required'
             ]);
        
-        $products = $this->product->where('barcode',$request->input('barcode'))
-            ->get();
+        $products = $this->product->where('barcode',$request->input('barcode'))->get();
+        
         if ($products->count() > 0){
             return view('orders.view_products',compact('products'));
         } else {
@@ -84,7 +86,7 @@ class OrderController extends Controller
 
     /**
     * vender un producto
-    * @return el producto que queremos vender
+    * @return crear una venta nueva
     */
     public function startOrder($product_id)
     {
@@ -94,6 +96,7 @@ class OrderController extends Controller
          ->orderBy('client_surname')
          ->lists('client_fullname','id');
         $clients = $this->client->all();
+        
         return view('orders.create_new_order',compact('product','client_array','clients'));
     }
 
@@ -127,7 +130,7 @@ class OrderController extends Controller
                     // las mismas caracteristicas
                     if($phoneDetail = PhoneDetail::find($product->phone_detail_id))
                     {
-                        if($phoneDetail->products->count() == 0)
+                        if($phoneDetail->products->count() === 0)
                         {
                             $phoneDetail->delete();
                         }
@@ -139,10 +142,32 @@ class OrderController extends Controller
         }
     }
 
+    /**
+    * @return detalles de un orden en particular
+    **/
     public function viewOrder($order_id)
     {
         $order = $this->order->find($order_id);
         $client = $this->client->find($order->client_id);
         return view('orders.view_order',compact('order','client'));
+    }
+
+    /**
+    * @return ventas del mes actual
+    */
+    public function thisMonthOrders()
+    {
+        // mes actual
+        $m = Carbon::now()->month;
+        $orders = $this->order->select('orders.id as order_id',
+                                       'orders.model','orders.sell_price','orders.client_id',
+                                       'client_name','client_surname'
+                                       )
+                  ->join('clients','clients.id','=','orders.client_id')
+                  ->join('brands','brands.id','=','orders.brand_id')
+                  ->whereMonth('orders.created_at','=',$m)
+                  ->get();     
+
+        return view('orders.view_montly_orders',compact('orders'));
     }
 }

@@ -136,7 +136,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-xs-6">
-                        <div class="form-group{{ $errors->has('buy_price') ? ' has-error' : '' }}">
+                        <div class="form-group{{ $errors->has('sell_price') ? ' has-error' : '' }}">
                             <div class="col-md-4 control-label">
                                 {!! Form::label('sell_price','Precio venta') !!}
                             </div>                                
@@ -145,7 +145,7 @@
                                     <div class="input-group-addon">
                                         <span class="fa fa-money"></span>
                                     </div> 
-                                    {!! Form::input('text','sell_price',$product['sell_price'],
+                                    {!! Form::input('text','sell_price',null,
                                                    ['class' => 'form-control'
                                                    ]) 
                                     !!}                                
@@ -229,7 +229,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                        <div class="form-group">                   
+                        <div class="form-group{{ $errors->has('screen') ? ' has-error' : '' }}">                   
                             <div class="col-md-4 control-label">
                                 {!! Form::label('screen','Pantalla') !!}
                             </div>                                
@@ -242,12 +242,17 @@
                                                    ['class' => 'form-control'
                                                    ]) 
                                     !!}                                
-                                </div>                               
+                                </div>
+                                 @if ($errors->has('screen'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('screen') }}</strong>
+                                    </span>
+                                @endif                              
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                        <div class="form-group">                   
+                        <div class="form-group{{ $errors->has('batery') ? ' has-error' : '' }}">                   
                             <div class="col-md-4 control-label">
                                 {!! Form::label('batery','Bateria') !!}
                             </div>                                
@@ -260,7 +265,12 @@
                                                    ['class' => 'form-control'
                                                    ]) 
                                     !!}                                
-                                </div>                               
+                                </div>
+                                @if ($errors->has('batery'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('batery') }}</strong>
+                                    </span>
+                                @endif                               
                             </div>
                         </div>
                     </div>
@@ -278,7 +288,12 @@
                                                    ['class' => 'form-control'
                                                    ]) 
                                     !!}                                
-                                </div>                               
+                                </div>
+                                 @if ($errors->has('camera'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('camera') }}</strong>
+                                    </span>
+                                @endif                              
                             </div>
                         </div>
                     </div>
@@ -296,7 +311,12 @@
                                                    ['class' => 'form-control'
                                                    ]) 
                                     !!}                                
-                                </div>                               
+                                </div>
+                                 @if ($errors->has('so'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('so') }}</strong>
+                                    </span>
+                                @endif                              
                             </div>
                         </div>
                     </div>
@@ -314,33 +334,18 @@
                                                    ['class' => 'form-control'
                                                    ]) 
                                     !!}                                
-                                </div>                               
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xs-6">
-                        <div class="form-group{{ $errors->has('id') ? ' has-error' : '' }}">
-                            <div class="col-md-4 control-label">
-                                {!! Form::label('provider_id','Provider') !!}
-                            </div>
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <div class="input-group-addon">
-                                        <span class="fa fa-apple"></span>
-                                    </div>
-                                     {!! Form::input('text','provider_id',$provider['id'],
-                                                   ['class' => 'form-control'
-                                                   ]) 
-                                    !!} 
                                 </div>
-                                @if ($errors->has('provider_id'))
+                                 @if ($errors->has('tecnology'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('id') }}</strong>
+                                        <strong>{{ $errors->first('tecnology') }}</strong>
                                     </span>
-                                @endif
+                                @endif                             
                             </div>
                         </div>
                     </div>
+                    
+                    {!! Form::hidden('provider_id',$provider['id'])!!}
+                    
                 </div>
                 <div class="row">
                     <div class="col-md-6 col-xs-6 col-xs-offset-5">  

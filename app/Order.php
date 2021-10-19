@@ -12,6 +12,6 @@ class Order extends Model
 
     public function client()
     {
-    	return $this->belongTo('App\Client');
+    	return $this->belongsTo('App\Client');
     }                                 
 }

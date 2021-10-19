@@ -39,19 +39,22 @@
         <table class="table">
             <th><h3 class="blue">Situacion almacen</h3><th>
             <tr>
-                <td><h4 class="blue">Valor stoc neto: </h4></td>
-                <td><h4>{{ number_format($stocValue['sell_value'],2) }} €</h4></td>
+                <td><h4 class="blue">Valor almacen: </h4></td>
+                <td><h4>{{ number_format($stocValue['buy_value'],2) }} €</h4></td>
             </tr>
             <tr>
-                <td><h4 class="blue">Valor stoc bruto: </h4></td>
-                <td><h4>{{ number_format($stocValue['buy_value'],2) }} €</h4></td>
+                <td><h4 class="blue">Valor de venta: </h4></td>
+                <td><h4>{{ number_format($stocValue['sell_value'],2) }} €</h4></td>
             </tr>            
             <tr>
                 <td><h4 class="blue">Ventas anuales: </h4></td>
                 <td><h4>{{ number_format($ordersValue,2) }} €</h4></td>
             </tr>
             <tr>
-                <td><h4 class="blue">Ventas de este mes: </h4></td>
+                <td><h4 class="blue"><a href="{{ url('ventas/mes/actual')  }}">Ventas mes actual</a></h4></td>
+                <td><h4>{{ number_format($monthProfit,2) }} €</h4></td>
+            <tr>
+                <td><h4 class="blue">Beneficio mes actual: </h4></td>
                 <td><h4>{{ $monthOrders }} €</h4></td>
             </tr>
         </table>

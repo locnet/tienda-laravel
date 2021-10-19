@@ -41,8 +41,7 @@ class ProviderController extends Controller
                               ->where('surname',$request->surname)
                               ->where('document',$request->document)
                               ->first();
-        if(!$provider)
-        {
+        if(!$provider) {
             $query = array('name'     => $request->name,
                            'surname'  => $request->surname,
                            'phone'    => $request->phone,
@@ -52,7 +51,7 @@ class ProviderController extends Controller
                            'city'     => $request->city,
                            'zipcode'  => $request->zipcode);
 
-            if(Provider::firstOrCreate($query)){
+            if(Provider::firstOrCreate($query)) {
                 return view('brand.success')
                           ->with('message','Se ha insertado un nuevo provedor!');
             }

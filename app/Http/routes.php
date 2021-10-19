@@ -9,6 +9,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+use App\Http\Controllers;
 
 Route::get('/', function () {
     return view('index');
@@ -20,6 +21,8 @@ Route::get('/stoc/{brand}','StocController@getBrand');
 Route::get('/stoc/{brand}/{model?}','StocController@getProduct');
 
 Route::get('/provider/{id}','ProviderController@getProvider');
+
+Route::get('/ventas/mes/actual','OrderController@thisMonthOrders');
 
 /*
 |----------------------------------------------------------------
@@ -55,7 +58,9 @@ Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function()
 
 	Route::get('product/copy/{id?}','ProductController@copy');
 
-	Route::post('product/create/entry','ProductController@createNew');
+	Route::post('product/search','ProductController@searchProduct');
+
+	Route::get('product/create/entry','ProductController@createNew');
 
 	Route::post('product/store','ProductController@store');
 
@@ -72,15 +77,12 @@ Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function()
 
     
 	// venta producto
+
 	Route::get('vender','OrderController@index');
 
 	Route::post('buscar/producto/modelo','OrderController@searchName');
 
 	Route::post('buscar/producto/barcode','OrderController@searchBarcode');
-
-	Route::get('modal/{product_id}','OrderController@modal');
-
-	Route::post('client/save','ClientController@save');
 
 	Route::get('vender/producto/{id}','OrderController@startOrder');
 
@@ -88,16 +90,39 @@ Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function()
 
 	Route::get('view/order/{id}','OrderController@viewOrder');
 
-	Route::get('view/invoice/{id}','PdfController@generatePdfInvoice');
+	Route::get('download/invoice/{id}','PdfController@downloadPdfInvoice');
+
+	Route::get('view/invoice/{id}','PdfController@viewInvoice');
 
 
-	// coprar un telefono de segunda mano	
+	// operaciones sobre productos
+
+	Route::get('borar/producto/{id}','StocController@deleteProduct');
+
+	Route::delete('borar/producto/{id}','StocController@confirmProductDelete');
+
+	// clientes
+	
+	Route::get('clientes/','ClientController@viewAll');
+
+	Route::post('client/save','ClientController@save');
+
+	Route::get('view/client/{id}','ClientController@viewClient');
+
+	Route::patch('client/{id}/update','ClientController@update');       // actualizacion cliente
+
+
+	// coprar un telefono de segunda mano
+
+	Route::get('comprar','PurchaseController@index');
+
+	Route::get('load/provider/{id}','PurchaseController@loadProvider');
+
+	Route::post('comprar/guardar/{id}','PurchaseController@store');
 
 	Route::post('buscar/proveedor','PurchaseController@search');
-
-	Route::post('comprar/guardar','PurchaseController@store');
 	
-	Route::get('comprar','PurchaseController@index');
+	
 
 	// post compra segunda mano
 

@@ -34,13 +34,16 @@ class StocController extends Controller
         $ordersValue = $this->order->sum('sell_price') - $this->order->sum('buy_price');
 
         $m = Carbon::now()->month;
-        $monthOrders = $this->order->whereMonth('created_at','=',$m)->sum('sell_price')-
+        $monthOrders = $this->order->whereMonth('created_at','=',$m)->sum('sell_price') 
+                       -
                        $this->order->whereMonth('created_at','=',$m)->sum('buy_price');
 
-        return view('stoc/stoc_index',compact('brands','stocValue','ordersValue','monthOrders'));
+        $monthProfit = $this->order->whereMonth('created_at','=',$m)->sum('sell_price');
+
+        return view('stoc/stoc_index',compact('brands','stocValue','ordersValue','monthOrders','monthProfit'));
     }
     /**
-     * Devuelve los productos de un marca en particular, por ejemplo Samsung.
+     * Devuelve todos los productos de un marca
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -51,12 +54,17 @@ class StocController extends Controller
         $brand_id = $this->brand->where('name',$brand)->select('id')->first();
         // toate produsele de aceasta marca
         if($brand_id) {
-            $products = $this->brand->find($brand_id['id'])
-                        ->products()
-                        ->join('phone_details','products.phone_detail_id','=','phone_details.id')
-                        ->join('providers','products.provider_id','=','providers.id')
+            $products = $this->brand->find($brand_id['id'])->products()
+                        ->select('products.model',
+                            'products.id as product_id',
+                            'providers.id as provider_id',
+                            'providers.name',
+                            'providers.surname',
+                            'phone_details.capacity')
+                        ->join('phone_details','phone_detail_id','=','phone_details.id')
+                        ->join('providers','provider_id','=','providers.id')
                         ->get();
-            if ($products->count() >0) {
+            if ($products->count() > 0) {
                 return view('products/brand',compact('products','brand'));
             } else {
                 return "nu am productos, raro";
@@ -106,4 +114,48 @@ class StocController extends Controller
             return view('products/product',compact('product','brand','phone_details'));
         }       
     }
+
+    /**
+     * Selecciona un producto para ser borrado
+     *
+     * @param  id del producto a borrar
+     * @return response
+    */
+    public function deleteProduct($id) {
+        $product = Product::findOrFail($id);
+        $brand = $this->brand->find($product->brand_id);
+        
+        return view('stoc/delete_product',compact('product','brand'));
+    }
+
+    /**
+     * Borra un producto de la base de datos
+     *
+     * @param  id del producto
+     * @return response
+    */
+    public function confirmProductDelete($id) {
+
+        $product = Product::findOrFail($id);
+        $phone_details = PhoneDetail::findOrFail($product->phone_detail_id);
+        $brand = Brand::findOrFail($product->brand_id);
+
+        if($product->delete()){
+            if ($phone_details->products()->count() === 0) {
+                if( !$phone_details->delete() ){
+                    return "Nu se poate sterge acest product";
+                }
+            }
+            // si todavia tengo productos de esta marca vuelvo al listado de la marca
+            // si no vuelvo al listado principal
+            if($brand->products()->count() > 0) {
+                return redirect('stoc/'.$brand->name);
+            }
+            return redirect('stoc');
+        } else {
+            return "nu am putut sterge";
+        }        
+        
+    }
+
 }

@@ -109,9 +109,6 @@
         </div><!-- fin panel panel-default-->
     </div><!-- fin row -->
     @include('modals._new_client')
-    @if ($clients->count() > 0)
-        @include('modals._update_client')
-    @endif
     
 </div>
 @endsection
@@ -128,7 +125,7 @@
                 data: $("modal-form").serialize(),
                 headers: {'X-CSRF-TOKEN': $('input[name="_token"]').attr('value')},
                 success: function(data){
-                    alert("Successfully submitted.")
+                    alert("Se ha creado el cliente.")
                 },
                 error: function(data){
                     alert('No se ha creado el cliente!');

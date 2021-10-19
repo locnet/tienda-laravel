@@ -1,11 +1,7 @@
 @extends('master')
-@section('title','Eror de busqueda | Tenemos los mejores y  hoteles de las costas de Andalucia')
-@section('meta_description','Hoteles baratos en Andalucia y los mejores tours, tenemos 
-buenos precios en reservas de hotel.')
+@section('title','Producto actualizado corectamente')
+@section('meta_description','')
 @section('hotel','class="active"')
-@section('customcss')
-    <link rel="stylesheet" href="{{ asset('css/bootstrap-slider.css') }}">
-@stop
 @section('content')
     <div class="row">
     	<div class="col-md-10 col-md-offset-1 login">

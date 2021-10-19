@@ -11,7 +11,7 @@
                     </h4>
                 </div>
                 <div class="panel-body">
-                    {!! Form::open(['url' => 'comprar/guardar',
+                    {!! Form::open(['url' => 'comprar/guardar/'.$provider['id'],
                                     'class' => 'form-horizontal']) 
                     !!}
                     <div class="row">
@@ -273,6 +273,11 @@
                                                             ['class' => 'form-control']) 
                                         !!}
                                     </div>
+                                    @if ($errors->has('price'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('price') }}</strong>
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -290,11 +295,13 @@
                                 </div>
                             </div>
                         </div> 
+                        
+                        {!! Form::hidden('type','particular') !!}
 
                         <div class="col-md-12 col-xs-12 col-xs-offset-5">
                             <div class="form-group">	                                                                       
 	                            <button type="submit" class="btn btn-primary" id="brand_btn">
-	                                <i class="fa fa-btn fa-database"></i>Crea
+	                                <i class="fa fa-btn fa-database"></i>Finalizar compra
 	                            </button>
 	                        </div>
 	                    </div>

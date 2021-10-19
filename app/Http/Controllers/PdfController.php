@@ -11,6 +11,7 @@ use App\Product;
 use App\Purchase;
 use App\Provider;
 use App\Brand;
+use PDF;
 
 class PdfController extends Controller
 {
@@ -31,17 +32,35 @@ class PdfController extends Controller
         $this->brand = $brand;
     }
 
-    // generar el pdf factura venta telefono
-    public function generatePdfInvoice($order_id){
+    // generar y bajar el pdf factura venta telefono
+    public function downloadPdfInvoice($order_id){
         $order = $this->order->find($order_id);
         $client = $this->client->find($order->client_id);
         $brand = $this->brand->find($order->brand_id);
+        $purchase = $this->purchase->where('imei',$order->imei)->first();
 
         if ($order != null  && $client != null && $brand != null) {
-            return view('orders.invoice_template',compact('order','client','brand'));
+            //return view('orders.invoice_template',compact('order','client','brand'));
         
-            return \PDF::loadView('orders.invoice_template',compact('order','client','brand'))
-               ->download('factura'.$order_id.'.pdf');
+            return \PDF::loadView('orders.invoice_template',compact('order','client','brand','purchase'))
+                        ->download('factura'.$order_id.'.pdf');
+        } else {
+            return view('orders.error')
+                  ->withMessage("Error! No se ha podido generar la factura, intentalo otra vez");
+        }
+        
+    }
+
+    //ver factura venta telefono sin descargar
+    public function viewInvoice($order_id){
+        $order = $this->order->find($order_id);
+        $client = $this->client->find($order->client_id);
+        $brand = $this->brand->find($order->brand_id);
+        $purchase = $this->purchase->where('imei',$order->imei)->first();
+
+        if ($order != null  && $client != null && $brand != null) {
+            return view('orders.invoice_template',compact('order','client','brand','purchase'));
+        
         } else {
             return view('orders.error')
                   ->withMessage("Error! No se ha podido generar la factura, intentalo otra vez");
@@ -54,9 +73,16 @@ class PdfController extends Controller
     {
         $purchase = $this->purchase->find($purchase_id);
         $provider = $this->provider->find($purchase->provider_id);
-        $product = $this->product->where('imei',$purchase->imei)->first();
-        $brand = $this->brand->find($product->brand_id);
 
+        // necesito recuperar el fabricante "brand", si el producto ha sido vendido tambien 
+        // ha sido borrado de la base datos, entonces tengo la order de la venta
+        $b = $this->product->select('brand_id')->where('model',$purchase->model)->first();
+        if ($b == null) {         // no tengo producto
+            $b = $this->order->select('brand_id')->where('model',$purchase->model)->first();
+        }
+
+        $brand = $this->brand->find($b->brand_id);
+        
         if ($purchase != null && $provider != null) {
             //return view('purchases.rebu_invoice_template',compact('purchase','provider'));
             return \PDF::loadView('purchases.rebu_invoice_template',compact('purchase','provider','brand'))
@@ -73,8 +99,16 @@ class PdfController extends Controller
     {
         $purchase = $this->purchase->find($purchase_id);
         $provider = $this->provider->find($purchase->provider_id);
-        $product = $this->product->where('imei',$purchase->imei)->first();
-        $brand = $this->brand->find($product->brand_id);
+
+        // necesito recuperar el fabricante "brand", si el producto ha sido vendido tambien 
+        // ha sido borrado de la base datos, entonces tengo la order de la venta
+        $b = $this->product->select('brand_id')->where('model',$purchase->model)->first();
+        if ($b == null) {         
+            // no tengo producto
+            $b = $this->order->select('brand_id')->where('model',$purchase->model)->first();
+        }
+
+        $brand = $this->brand->find($b->brand_id);
 
         if ($purchase != null && $provider != null) {
             return view('purchases.rebu_invoice_template',compact('purchase','provider','brand'));

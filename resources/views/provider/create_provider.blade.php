@@ -116,7 +116,7 @@
                                             <span class="fa fa-map-marker"></span>
                                         </div> 
                                         {!! Form::input('text','street',null, 
-                                                            ['class' => 'form-control']) 
+                                                        ['class' => 'form-control']) 
                                         !!}
                                     </div>
                                     @if ($errors->has('street'))

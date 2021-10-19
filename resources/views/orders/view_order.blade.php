@@ -29,12 +29,19 @@
             	</h4></td>
             </tr>
             <tr>
-            	<td><a href="{{ url('view/invoice/'.$order->id) }}">
-            		<button class="btn btn-success">
-            		    <i class="fa fa-file-pdf-o"></i>Imprimir factura
-            	    </button>
-                </a>
-            </td>
+            	<td><a href="{{ url('download/invoice/'.$order->id) }}">
+                		<button class="btn btn-success">
+                		    <i class="fa fa-file-pdf-o"></i>Imprimir factura
+                	    </button>
+                    </a>
+                </td>
+                <td><a href="{{ url('view/invoice/'.$order->id) }}">
+                        <button class="btn btn-success">
+                            <i class="fa fa-file-pdf-o"></i>Ver factura
+                        </button>
+                    </a>
+                </td>
+            </tr>
         </table>
     </div>
 </div>

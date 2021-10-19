@@ -25,5 +25,12 @@
 		    <td><p>{{ ucwords($provider['street']).", ".$provider['zipcode']." ".ucwords($provider['city']) }}
 		</tr>
     </table>
+    <h3 class="text-center">
+		<a href="{{ URL::previous() }}">
+	    	<button class="btn btn-success">
+	    		Volver
+	    	</button>
+	    </a>
+    </h3>
 </div>
 @endsection

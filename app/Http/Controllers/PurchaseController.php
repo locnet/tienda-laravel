@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Input;
 use App\Purchase;
 use App\Provider;
 use App\Product;
 use App\Brand;
 use App\Http\Requests;
-use Route;
 
 class PurchaseController extends Controller
 {
@@ -43,24 +43,35 @@ class PurchaseController extends Controller
     	$validate = $this->validate($request,[
             'document' => 'required'
     	]);
-
+        
+        // si encuentro un proveedor cargo el formulario de compra
 
     	if ($this->provider->where('document',$request->document)->count() > 0){
             
             $provider =  $this->provider->where('document',$request->document)->first();
-            return view('purchases.create_purchase',compact('provider'));
+
+            return view('provider.choose_provider',compact('provider'));
 
     	} else {
             return redirect('provedor');
         }
     }
 
+    public function loadProvider($id)
+    {
+        if($provider = $this->provider->find($id)) {
+            return view('purchases.create_purchase',compact('provider'));
+        } else {
+            return "nu am provider";
+        }
+    }
+
 	/** 
     * @return crea una nueva entrada en purchases (compras)
     */
-	 public function store(Request $request)
+	 public function store(Request $request,$id)
 	 {
-	 	/*$this->validate($request, [
+	 	$valid_form = $this->validate($request, [
             'name'     => 'required',
             'surname'  => 'required',
             'document' => 'required',
@@ -72,13 +83,13 @@ class PurchaseController extends Controller
             'model'    => 'required',
             'imei'     => 'required|numeric',
             'barcode'  => 'numeric',
-            'price'    => 'required'
+            'price'    => 'required|numeric'
             ]);
         
-        return "validat";*/
-        if($this->provider->where('document',$request->document)->first() != null){
+        if($this->provider->find($id) != null){
 
-            $provider = $this->provider->where('document',$request->document)->first();
+            $provider = $this->provider->find($id);
+
             $brand = $this->brand->where('name','like','%$request->brand%')->first();
 
             $purchase_query = array('model'       => $request->model,
@@ -118,6 +129,8 @@ class PurchaseController extends Controller
 
     /** 
     * @return buscar una factura rebu por el imei del telefono
+    *
+    *
     */
     public function searchRebuInvoice()
     {
@@ -126,6 +139,7 @@ class PurchaseController extends Controller
 
     /** 
     * @return devuelve la factura rebu corespondiente a un imei
+    *
     */
     public function showRebuInvoice(Request $request)
     {
@@ -135,8 +149,10 @@ class PurchaseController extends Controller
 
         if ($purchase = $this->purchase->where('imei',$request->imei)->first()) {
             $provider = $this->provider->find($purchase->provider_id);
+
             return view('purchases.view_purchase',compact('purchase','provider'))
                         ->withMessage("Detalles factura");
+                        
             return redirect(url('view/rebu-invoice/'.$purchase->id));
         } else {
             return view('purchases.search_rebu_error')->withMessage("Nu exista nici o cumparare cu acest imei!");

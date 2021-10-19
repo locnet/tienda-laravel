@@ -16,7 +16,7 @@ buenos precios en reservas de hotel.')
                     @endif
 		    	</h2>
 		    	<h3 class="text-center">
-		    		<a href="{{ url('brand/create') }}">
+		    		<a href="{{ URL::previous() }}">
 				    	<button class="btn btn-success">
 				    		Volver
 				    	</button>

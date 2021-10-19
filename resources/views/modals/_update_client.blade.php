@@ -6,19 +6,14 @@
                     <h4 class="modal-title">Cliente existente</h4>
                 </div>
                 <div class="modal-body">
-                    {!! Form::open(['url' => 'client/save/',
+                    {!! Form::open(['url' => 'client/'.$client->id.'/update',
                                     null,'class' => 'form-horizontal',
                                           'id' => 'update_client_modal',
                                     ]) 
                     !!}
+                    {!! method_field('PATCH') !!}
                     {!! csrf_field() !!}
-                    {!! Form::hidden('product_id',$product->id) !!}
                     {!! Form::hidden('client_id',1) !!}
-                    <?php 
-                        if ($clients->count() > 0){
-                            $c = $clients->find(1);
-                        }
-                    ?>   
                     <div class="row">
                         <div class="col-md-6 col-xs-6">
                             <div class="form-group{{ $errors->has('client_name') ? ' has-error' : '' }}" >
@@ -30,7 +25,7 @@
                                         <div class="input-group-addon">
                                             <span class="fa fa-male"></span>
                                         </div> 
-                                        {!! Form::input('text','client_name',$c->client_name, 
+                                        {!! Form::input('text','client_name',$client->client_name, 
                                                          ['class' => 'form-control',
                                                          'id' => 'client_name'])
                                         !!} 
@@ -48,7 +43,7 @@
                                         <div class="input-group-addon">
                                             <span class="fa fa-male"></span>
                                         </div> 
-                                        {!! Form::input('text','client_surname',null,
+                                        {!! Form::input('text','client_surname',$client->client_surname,
                                                        ['class' => 'form-control',
                                                         'id' => 'client_surname']) 
                                         !!}                                
@@ -67,7 +62,7 @@
                                         <div class="input-group-addon">
                                             <span class="fa fa-phone"></span>
                                         </div> 
-                                        {!! Form::input('text','client_phone',null,
+                                        {!! Form::input('text','client_phone',$client->client_phone,
                                                        ['class' => 'form-control',
                                                         'id' => 'client_pohone']) 
                                         !!}
@@ -86,7 +81,7 @@
                                         <div class="input-group-addon">
                                             <span class="fa fa-road"></span>
                                         </div> 
-                                        {!! Form::input('text','street',null,
+                                        {!! Form::input('text','street',$client->street,
                                                        ['class' => 'form-control',
                                                         'id' => 'street']) 
                                         !!}                                
@@ -104,7 +99,7 @@
                                         <div class="input-group-addon">
                                             <span class="fa fa-building"></span>
                                         </div> 
-                                        {!! Form::input('text','town',null,
+                                        {!! Form::input('text','town',$client->town,
                                                        ['class' => 'form-control',
                                                         'id' => 'town']) 
                                         !!}                                
@@ -122,7 +117,7 @@
                                         <div class="input-group-addon">
                                             <span class="fa fa-envelope"></span>
                                         </div> 
-                                        {!! Form::input('text','postcode',null,
+                                        {!! Form::input('text','postcode',$client->postcode,
                                                        ['class' => 'form-control',
                                                         'id' => 'postcode']) 
                                         !!}                                
@@ -140,9 +135,26 @@
                                         <div class="input-group-addon">
                                             <span class="fa fa-barcode"></span>
                                         </div> 
-                                        {!! Form::input('text','document',null,
+                                        {!! Form::input('text','document',$client->document,
                                                        ['class' => 'form-control',
                                                         'id' => 'document']) 
+                                        !!}                                
+                                    </div>                               
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                            <div class="form-group{{ $errors->has('birthdate') ? ' has-error' : '' }}">                   
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <span class="fa fa-calendar"></span>
+                                        </div> 
+                                        {!! Form::input('text','birthdate',$client->birthdate,
+                                                       ['class' => 'form-control',
+                                                       'placeholder' => 'Nacimiento ex: 1990-12-01',
+                                                       'id' => 'birthdate'
+                                                       ]) 
                                         !!}                                
                                     </div>                               
                                 </div>
@@ -153,7 +165,7 @@
                         <div class="col-md-6 col-xs-6 col-xs-offset-5">  
                             <div class="form-group">                                                                     
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-btn fa-close"></i>Aceptar
+                                    <i class="fa fa-btn fa-save"></i>Aceptar
                                 </button>
                             </div>
                         </div>

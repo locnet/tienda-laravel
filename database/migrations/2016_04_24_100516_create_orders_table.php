@@ -16,7 +16,7 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->integer('brand_id');
             $table->integer('product_id');
-            $table->integer('imei');
+            $table->string('imei')->unique();
             $table->string('barcode');
             $table->string('model');
             $table->float('buy_price');

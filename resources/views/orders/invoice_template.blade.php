@@ -41,45 +41,66 @@
                             </small>
                         </h4>
                         <p><small>Calle: {{ $client->street }}</br>
-                        {{ $client->postcode."-".$client->city }}</br>
+                        {{ $client->postcode."-".$client->town }}</br>
                         CIF/NIF: {{ $client->document }}</br>
                         Tlf. {{ $client->client_phone }}</br>
                         </small></p>
                     </td>
             </div>
+            <!-- calculo IVA dependiendo si era comprado de particular o profesinal -->
+            <?php
+                if($purchase) {
+                    $diference = round($order->sell_price - $order->buy_price,2);
+                    $iva = round($diference - ($diference / 1.21),2);
+                    $regimen = "REBU (Regimen Especial Bienes Usados)";
+                } else {
+                    $iva =  round($order->sell_price - ($order->sell_price / 1.21),2);
+                    $regimen = "Normal";
+                }
+            ?>
             <div class="row login">
             	<table class="table table-bordered">
                     <tr class="info">
-                        <td>Articulo</td>
+                        <td>Articulo Nº</td>
                         <td>Description</td>
                         <td>Cantidad</td>
-                        <td>Precio unidad</td>
-                        <td>Tasa IVA</td>
+                        <td>Precio sin IVA</td>
+                        <td>IVA</td>
+                        <td>Total con IVA</td>
                     </tr>
                     <tr>
-                    	<td><p>{{ $order->product_id }}</p></td>
-                        <td><p>{{ $brand->name." ".$order->model }}</p></td>
+                    	<td><p><small>{{ $order->product_id }}</small></p></td>
+                        <td>
+                            <p><small>{{ ucwords($brand->name." ".$order->model) }}</small></p>
+                            <p><small>Imei: {{$order->imei }}</small></p>
+                        </td>
                     	<td><p>1</p></td>
-                        <td><p>{{ round(($order->sell_price / 1.21),2) }} €</p></td>
-                        <td><p>{{ round($order->sell_price - ($order->sell_price / 1.21),2) }} €</p></td>
+                        <td><p><small>{{ number_format((float)$order->sell_price - $iva, 2, '.', '') }} €</small></p></td> 
+                        <td><p><small>{{ number_format((float)$iva, 2, '.', '')  }} €</small></p></td>
+                        <td><p><small>{{ number_format((float)$order->sell_price,2,'.','') }} €</small</p></td>
                     </tr>                    
                 </table>
             </div>
             <div class="row">
-                <table class="table table-bordered pull-right col-md-7">
-                    <tr class="info">
-                        <td>Tasa IVA</td>
-                        <td>Total sin IVA (EUR)</td>
-                        <td>Total IVA (EUR)</td>
-                        <td>Total (EUR)</td>
-                    </tr>
-                    <tr>
-                        <td><p>21%</p></td>
-                        <td><p>{{ round(($order->sell_price / 1.21),2) }} €</p></td>
-                        <td><p>{{ round($order->sell_price - ($order->sell_price / 1.21),2) }} €</p></td>
-                        <td><p>{{number_format((float)$order->sell_price, 2, '.', '')  }} €</p></td>
-                    </tr>
-                </table>
+                @if ($purchase != null)
+                    <h3>Aclaracion IVA Regimen Especial Bienes Usados</h3>
+                    <table class="table table-bordered pull-right col-md-7">
+                        <tr class="info">
+                            <td>Tasa IVA</td>
+                            <td>Coprado por</td>
+                            <td>Vendido por</td>
+                            <td>Beneficio</td>
+                            <td>IVA</td>                       
+                        </tr>
+                        <tr>
+                            <td><p>21%</p></td>
+                            <td><p>{{ number_format((float)$order->buy_price,2,',','') }} €</p></td>
+                            <td><p>{{ number_format((float)$order->sell_price,2, ',', '') }} €</p></td>
+                            <td><p>{{ number_format((float)$order->sell_price - $order->buy_price,2,'.','') }} €</p></td>
+                            <td><p>{{ number_format((float)$iva,2, '.','') }} €</p></td>
+                        </tr>                    
+                    </table>
+                @endif
             </div>
         </div>
     </body>

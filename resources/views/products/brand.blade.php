@@ -19,7 +19,7 @@
     	    	<th><h4 class="blue">Modelo</h4></td>
     	    	<th><h4 class="blue">Capacidad</h4></td>
                 <th><h4 class="blue">En almacen desde:</h4></td>
-                <th><h4 class="blue">Comprado de:</h4></td>
+                <th><h4 class="blue">Proveedor:</h4></td>
             </th>
 	    	@foreach($products as $product)
 	    	   
@@ -36,6 +36,20 @@
 	    	        	<a href="{{ url('/provider/'.$product->provider_id) }}">
 	    	        		{{ ucwords($product->name." ".$product->surname) }} </a>
 	    	        	</p>
+	    	        </td>
+	    	        <td>
+	    	        	<a href="{{ url('vender/producto/'.$product->product_id) }}">
+	    	        	    <button class="btn btn-success"><i class="fa fa-shopping-cart"></i>
+	    	        	    	Vender
+	    	        	    </button>
+	    	        	</a>
+	    	        </td>
+	    	        <td>
+	    	        	<a href="{{ url('borar/producto/'.$product->product_id) }}">
+	    	        	    <button class="btn btn-warning"><i class="fa fa-trash"></i>
+	    	        	    	Borar
+	    	        	    </button>
+	    	        	</a>
 	    	        </td>
 	    	    </tr>
 	    	@endforeach

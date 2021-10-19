@@ -14,7 +14,7 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('imei')->index();
+            $table->string('imei')->index()->unique();
             $table->string('barcode')->index();
             $table->string('model');
             $table->float('buy_price');

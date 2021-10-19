@@ -58,19 +58,30 @@
 						            <li @yield('inicio')><a href="{{ url('/') }}">
 						            	<span class="fa fa-home"></span>Inicio</a></li>
 						            <li @yield('stoc')>
-						            	<a href="{{ url('/stoc') }}">
-						            		<span class="fa fa-database"></span>Almacen</a>
-						            </li>
-						            <li @yield('insertar')>
-						            	<a href="{{ url('/brand/create') }}" class="dropdown-toggle" 
+						            	<a href="{{ url('comprar') }}" class="dropdown-toggle"
 						            	    data-toggle="dropdown">
-						            	    <span class="fa fa-edit"></span>Insertar<span class="caret"></span>
-						                </a>
-						                <ul class="dropdown-menu">
-			                            	<li><a href="{{ url('/brand/create') }}">Nueva categoria</a></li>
-			                                <li><a href="{{ url('/provedor') }}">Nuevo provedor</a></li>
-			                                <li><a href="{{ url('/product') }}">Nuevo producto</a></li> 
-			                             </ul>
+						            		<span class="fa fa-database"></span>Almacen<span class="caret"></span>
+						            	</a>
+						            	<ul class="dropdown-menu">
+			                            	<li><a href="{{ url('/stoc') }}">Stoc</a></li>
+			                                <li><a href="{{ url('product/to_update') }}">Productos sin actualizar</a></li>
+			                                <li><a href="{{ url('/brand/create') }}">Nueva categoria</a></li>
+					                        <li><a href="{{ url('/provedor') }}">Nuevo provedor</a></li>
+					                        <li><a href="{{ url('/product') }}">Nuevo producto</a></li>					      
+			                            </ul>
+						            </li>
+						            <li @yield('repair')>
+						            	<a href="{{ url('reparar') }}" class="dropdown-toggle"
+						            	    data-toggle="dropdown">
+						            		<span class="fa fa-database"></span>Reparaciones<span class="caret"></span>
+						            	</a>
+						            	<ul class="dropdown-menu">
+			                            	<li><a href="{{ url('/stoc') }}">Nueva reparacion</a></li>
+			                                <li><a href="{{ url('product/to_update') }}">Estado reparacion</a></li>
+			                                <li><a href="{{ url('/brand/create') }}">Ver precio reparacion</a></li>
+					                        <li><a href="{{ url('/provedor') }}">Crear precio</a></li>
+					                        <li><a href="{{ url('/product') }}">Nuevo producto</a></li>					      
+			                            </ul>
 						            </li>
 						            <li @yield('vender')><a href="{{ url('vender') }}">
 						            	<span class="fa fa-shopping-cart"></span>Vender
@@ -83,9 +94,12 @@
                                         <ul class="dropdown-menu">
 			                            	<li><a href="{{ url('comprar') }}">Comprar a particular</a></li>
 			                                <li><a href="{{ url('/buscar/factura-rebu') }}">Buscar factura REBU</a></li>
-			                                <li><a href="{{ url('product/to_update') }}">Productos sin actualizar</a></li>
 			                             </ul>
 							        </li>
+							        <li @yield('clients')>
+						            	<a href="{{ url('/clientes') }}">
+						            		<span class="fa fa-user"></span>Clientes</a>
+						            </li>
 						            @if (Auth::user() && Auth::check())						                
 						                <li><a href="{{ url('/auth/logout') }}">
 						                	<span class="fa fa-user"></span> Logout
